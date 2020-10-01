@@ -1,0 +1,13 @@
+version: '3'
+services:
+  dcrapi:
+    container_name: pokeAPI_checks
+    build: .
+    image: pokemonapi:v1
+    command: tail -f /dev/null
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/opt/apps
+    ports:
+      - "5000:80"
