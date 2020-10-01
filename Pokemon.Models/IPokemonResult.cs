@@ -4,7 +4,6 @@ namespace Pokemon.Models
 {
     public interface IPokemonResult
     {
-        string Name { get; set; }
-        string Description { get; set; }
+        string Text { get; set; }
     }
 }

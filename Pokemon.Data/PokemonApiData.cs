@@ -36,8 +36,7 @@ namespace Pokemon.Data
         {
             var pokemonApiResult = new PokemonResult
             {
-                Name = pokemonSpecies.Name,
-                Description = pokemonSpecies.FlavorTextEntries.Where(flavorTexts => flavorTexts.Language.Name == "en").Select(TrimLineBreaks).FirstOrDefault()
+                Text = pokemonSpecies.FlavorTextEntries.Where(flavorTexts => flavorTexts.Language.Name == "en").Select(TrimLineBreaks).FirstOrDefault()
             };
             return pokemonApiResult;
         }

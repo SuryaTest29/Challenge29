@@ -34,6 +34,10 @@ namespace Pokemon.Search
             services.AddScoped<IPokeApiAgent, PokeApiAgent>();
             services.AddScoped<IPokemonApiService, PokemonApiService>();
 
+            services.AddScoped<IShakespeareApiData, ShakespeareApiData>();
+            services.AddScoped<IShakespeareApiAgent, ShakespeareApiAgent>();
+            services.AddScoped<IShakespeareApiService, ShakespeareApiService>();
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo

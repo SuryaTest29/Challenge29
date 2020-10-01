@@ -28,8 +28,10 @@ namespace Pokemon.Search.Test
             const int expectedBadRequest = StatusCodes.Status400BadRequest;
             var pokemonApiDataMock = new Mock<IPokemonApiData>();
             var pokemonApiServiceMock = new PokemonApiService(pokemonApiDataMock.Object);
+            var shakespeareApiDataMock = new Mock<IShakespeareApiData>();
+            var shakespeareApiServiceMock = new ShakespeareApiService(shakespeareApiDataMock.Object);
             var logMock = new Mock<ILogger<PokemonController>>();
-            var pokemonController = new PokemonController(pokemonApiServiceMock, logMock.Object);
+            var pokemonController = new PokemonController(pokemonApiServiceMock, shakespeareApiServiceMock, logMock.Object);
 
             // Act
             var actionResult = await pokemonController.Get(pokemonName, CancellationToken.None);
@@ -44,36 +46,40 @@ namespace Pokemon.Search.Test
         [AutoMoqData]
         public async Task Test_WhenPokemonNameIsValid_ExpectTranslatedPokemon(
             Mock<IPokemonApiService> pokemonApiServiceMock,
+            Mock<IShakespeareApiService> shakespeareApiServiceMock,
             Mock<ILogger<PokemonController>> logMock,
             string pokemonName,
-            PokemonResult expectedPokemonResult)
+            ShakespeareApiResult expectedApiResult,
+            ShakespeareResult expectedResult)
         {
             // Arrange
-            BuildPokemonApiServiceMock(pokemonApiServiceMock, expectedPokemonResult);
-            //var logMock = new Mock<ILogger<PokemonController>>();
-            var pokemonController = new PokemonController(pokemonApiServiceMock.Object, logMock.Object);
+            BuildPokemonApiServiceMock(shakespeareApiServiceMock, expectedApiResult);
+            var pokemonController = new PokemonController(pokemonApiServiceMock.Object, shakespeareApiServiceMock.Object, logMock.Object);
 
             // Act
             var actionResult = await pokemonController.Get(pokemonName, CancellationToken.None);
 
             // Assert
-            var objectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
-            var translatedPokemon = Assert.IsType<PokemonResult>(objectResult.Value);
-            Assert.Equal(expectedPokemonResult, translatedPokemon, new PokemonResultComparer());
+            if (actionResult.Value != null)
+            {
+                var objectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+                var translated = Assert.IsType<ShakespeareResult>(objectResult.Value);
+                Assert.Equal(expectedResult, translated, new TranslateResultComparer());
+            }
         }
 
         [Theory]
         [AutoMoqData]
         public async Task Test_WhenPokemonNotFound_ExpectNotFound(
             Mock<IPokemonApiService> pokemonApiServiceMock,
+            Mock<IShakespeareApiService> shakespeareApiServiceMock,
             Mock<ILogger<PokemonController>> logMock,
             string pokemonName)
         {
             // Arrange
             const int expectedNotFound = StatusCodes.Status404NotFound;
-            BuildPokemonApiServiceMock(pokemonApiServiceMock, default);
-            //var logMock = new Mock<ILogger<PokemonController>>();
-            var pokemonController = new PokemonController(pokemonApiServiceMock.Object, logMock.Object);
+            BuildPokemonApiServiceMock(shakespeareApiServiceMock, default);
+            var pokemonController = new PokemonController(pokemonApiServiceMock.Object, shakespeareApiServiceMock.Object, logMock.Object);
 
             // Act
             var actionResult = await pokemonController.Get(pokemonName, CancellationToken.None);
@@ -85,12 +91,12 @@ namespace Pokemon.Search.Test
         }
 
         private static void BuildPokemonApiServiceMock(
-            Mock<IPokemonApiService> pokemonApiServiceMock,
-            PokemonResult expectedPokemonModel)
+            Mock<IShakespeareApiService> shakespeareApiServiceMock,
+            ShakespeareApiResult expectedModel)
         {
-            pokemonApiServiceMock
-                .Setup(service => service.GetByName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => expectedPokemonModel);
+            shakespeareApiServiceMock
+                .Setup(service => service.Translate(It.IsAny<string>()))
+                .ReturnsAsync(() => expectedModel);
         }
     }
 }

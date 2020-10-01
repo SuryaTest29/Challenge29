@@ -6,7 +6,6 @@ namespace Pokemon.Models
 {
     public class PokemonResult: IPokemonResult
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Text { get; set; }
     }
 }
