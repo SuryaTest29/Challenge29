@@ -38,6 +38,7 @@ Basically the solution is a .NET Core application consisting of App Layer, Busin
 * We list the hello-world image by using the command "docker image ls"
 * Now we execute the command "docker build -f Dockerfile -t pokemonapi:v1 ." to build the dockerfile into a container image.
 * Next we use the command "docker-compose up" to start the services
+* The image "Starting Services on Docker" shows the results of the same.
 * Then we navigate to the url "localhost:5000/swagger/index.html" and check the UI by using the steps mentioned as to how we run the program.
 
 
@@ -49,3 +50,4 @@ Basically the solution is a .NET Core application consisting of App Layer, Busin
 * Next we use the "cd Pokemon.Search.Test" to navigate to the folder containing the tests
 * Finally we run the command "dotnet test".
 * We see the success message that the 5 tests have been executed successfully.
+* The image "Test Project Docker Results" shows the reults of the same.
